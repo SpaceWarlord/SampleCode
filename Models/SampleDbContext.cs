@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models.Navigation;
 using SampleCode.Other;
 using System.Diagnostics;
@@ -19,8 +18,7 @@ namespace Models
             
         public SampleDbContext()
         {
-            Debugger.Launch();            
-            //Database.EnsureCreated();
+            Debugger.Launch();                        
         }
 
         public SampleDbContext(DbContextOptions<SampleDbContext> options) : base(options)
@@ -39,33 +37,8 @@ namespace Models
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            Debug.WriteLine("-- OnModelCreating --");
-            modelBuilder.SetupContext(this.Database.IsSqlite()); // Identify if we are using a SQLite database
-            modelBuilder.Entity<UserModel>().HasIndex(x => x.Username).IsUnique();            
-            
-
-            if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
-            {                
-                //https://blog.dangl.me/archive/handling-datetimeoffset-in-sqlite-with-entity-framework-core/
-                // SQLite does not have proper support for DateTimeOffset via Entity Framework Core, see the limitations
-                // here: https://docs.microsoft.com/en-us/ef/core/providers/sqlite/limitations#query-limitations
-                // To work around this, when the Sqlite database provider is used, all model properties of type DateTimeOffset
-                // use the DateTimeOffsetToBinaryConverter
-                // Based on: https://github.com/aspnet/EntityFrameworkCore/issues/10784#issuecomment-415769754
-                // This only supports millisecond precision, but should be sufficient for most use cases.
-                foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-                {
-                    var properties = entityType.ClrType.GetProperties().Where(p => p.PropertyType == typeof(DateTimeOffset)
-                                                                                || p.PropertyType == typeof(DateTimeOffset?));
-                    foreach (var property in properties)
-                    {
-                        modelBuilder
-                            .Entity(entityType.Name)
-                            .Property(property.Name)
-                            .HasConversion(new DateTimeOffsetToBinaryConverter());
-                    }
-                }                
-            }
+            Debug.WriteLine("-- OnModelCreating --");            
+            modelBuilder.Entity<UserModel>().HasIndex(x => x.Username).IsUnique();                                   
         }
     }
 
@@ -76,39 +49,6 @@ namespace Models
             Debug.WriteLine("Adding db extension");
             var exists = predicate != null ? dbSet.Any(predicate) : dbSet.Any();
             return !exists ? dbSet.Add(entity) : null;
-        }
-    }
-
-    public static class ContextSetup
-    {
-        public static void SetupContext(this ModelBuilder modelBuilder, bool isSQLite)
-        {
-            Debug.WriteLine("In SetupContext");
-            // Model building ...
-
-            // Handle datetimes in SQLite src: https://blog.dangl.me/archive/handling-datetimeoffset-in-sqlite-with-entity-framework-core/
-            if (isSQLite) // We found this in Context.cs
-            {
-                Debug.WriteLine("is using sqlite");
-                // SQLite does not have proper support for DateTimeOffset via Entity Framework Core, see the limitations
-                // here: https://docs.microsoft.com/en-us/ef/core/providers/sqlite/limitations#query-limitations
-                // To work around this, when the Sqlite database provider is used, all model properties of type DateTimeOffset
-                // use the DateTimeOffsetToBinaryConverter
-                // Based on: https://github.com/aspnet/EntityFrameworkCore/issues/10784#issuecomment-415769754
-                // This only supports millisecond precision, but should be sufficient for most use cases.
-                foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-                {
-                    var properties = entityType.ClrType.GetProperties().Where(p => p.PropertyType == typeof(DateTimeOffset)
-                                                                                || p.PropertyType == typeof(DateTimeOffset?));
-                    foreach (var property in properties)
-                    {
-                        modelBuilder
-                            .Entity(entityType.Name)
-                            .Property(property.Name)
-                            .HasConversion(new DateTimeOffsetToBinaryConverter()); // The converter!
-                    }
-                }
-            }
         }
     }
 }

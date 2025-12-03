@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Models.Navigation
 {
     [Table("Address", Schema = "TPT")]
-    public class AddressModel : BaseModel
+    public class AddressModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.Navigation
 {
     [Table("Suburb", Schema = "TPT")]
-    public class SuburbModel : BaseModel
+    public class SuburbModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

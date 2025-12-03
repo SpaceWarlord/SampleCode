@@ -1,10 +1,9 @@
-﻿using Models;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SampleCode.Other
 {
     [Table("Setting", Schema = "TPT")]
-    public class SettingModel : BaseModel
+    public class SettingModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

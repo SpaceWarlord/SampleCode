@@ -6,23 +6,23 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SampleCode.Services.Navigation
+namespace SampleCode.Services.Navigation;
+
+public class SuburbService : IPageService<SuburbDTO>
 {
-    public class SuburbService : BaseService, IPageService<SuburbDTO>
+    private SampleDbContext _db;
+    public SuburbService(SampleDbContext db)
     {
-        public SuburbService(SampleDbContext db)
-        {
-            _db = db;
-        }
+        _db = db;
+    }
 
-        public Task<int> AddUpdate(SuburbDTO dto)
-        {
-            throw new System.NotImplementedException();
-        }
+    public Task<int> AddUpdate(SuburbDTO dto)
+    {
+        throw new System.NotImplementedException();
+    }
 
-        public async Task<ObservableCollection<SuburbDTO>> GetAll()
-        {
-            return new ObservableCollection<SuburbDTO>(await _db.Suburbs.Select(c => new SuburbDTO(c.Id, c.Name, c.PostCode)).ToListAsync());
-        }
+    public async Task<ObservableCollection<SuburbDTO>> GetAll()
+    {
+        return new ObservableCollection<SuburbDTO>(await _db.Suburbs.Select(c => new SuburbDTO(c.Id, c.Name, c.PostCode)).ToListAsync());
     }
 }

@@ -1,9 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SampleCode.Extensions.Navigation;
-using SampleCode.Services.Navigation;
+using Models;
+using Models.Navigation;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
@@ -37,24 +36,34 @@ namespace SampleCode.ViewModels.Data.Navigation
             Distance = distance;
         }
 
-        public async Task AddUpdate(RouteService route)
+        public async Task Add()
         {
-            Debug.WriteLine("Called Save Async");
-            IsModified = false;
-            if (IsNew)
+            var db = new SampleDbContext();
+            var model = new RouteModel
             {
-                Debug.WriteLine("its new");
-                IsNew = false;
-                int result = await route.AddUpdate(this.ToDto());
-                if (result != 0)
-                {
-                    Id = result;
-                }
-                else
-                {
-                    Debug.WriteLine("Error Adding");
-                }
-            }
+                Name = Name,
+                RouteAddresses=null,
+                Distance = Distance,
+            };
+            db.Routes.Add(model);
+            await db.SaveChangesAsync();
         }
+
+        public async Task Update()
+        {
+            if (Id!=0)
+            {
+                var db = new SampleDbContext();
+                var model = new RouteModel
+                {
+                    Id= Id,
+                    Name = Name,
+                    RouteAddresses = null,
+                    Distance = Distance,
+                };
+                db.Routes.Update(model);
+                await db.SaveChangesAsync();               
+            }
+        }        
     }
 }

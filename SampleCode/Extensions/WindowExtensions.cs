@@ -3,15 +3,14 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using WinRT.Interop;
 
-namespace SampleCode.Extensions
+namespace SampleCode.Extensions;
+
+internal static class WindowExtensions
 {
-    internal static class WindowExtensions
+    public static AppWindow GetAppWindow(this Window window)
     {
-        public static AppWindow GetAppWindow(this Window window)
-        {
-            nint hWnd = WindowNative.GetWindowHandle(window);
-            WindowId wndId = Win32Interop.GetWindowIdFromWindow(hWnd);
-            return AppWindow.GetFromWindowId(wndId);
-        }
+        nint hWnd = WindowNative.GetWindowHandle(window);
+        WindowId wndId = Win32Interop.GetWindowIdFromWindow(hWnd);
+        return AppWindow.GetFromWindowId(wndId);
     }
 }

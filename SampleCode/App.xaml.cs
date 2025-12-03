@@ -15,257 +15,256 @@ using System.Reflection;
 using System.Text.Json;
 using Windows.Storage;
 
-namespace SampleCode
+namespace SampleCode;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    public Window? LoginWindow;
+    public Window? SetupWindow;
+    public Window? MainWindow;
+    public UserViewModel? CurrentUser { get; set; } = null;
+    public static Window? Window { get; set; }
+    public bool unpackedApp = false;
+    public static AppSetting? AppSettings { get; set; }
+    public static string LocalAppDataPath = "";
+    public static string AppDataFolderPath = "";
+    public static string AppName = "SampleApp";
+    public static string SettingsFileName = "app_settings.json";
+    public const string SettingsContainer = "SettingsContainer";
+    public static ApplicationDataContainer? Settings = null;                
+
+    public IServiceProvider Services { get; }
+    
+    public App()
+    {            
+        Application.Current.DispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;            
+        Services = ConfigureServices();
+        this.InitializeComponent();
+        InitializeDb();
+        AppType();            
+        MainWindow = new MainWindow();
+        Window = new Window();
+    }
+
+    public void AppType()
     {
-        public Window? LoginWindow;
-        public Window? SetupWindow;
-        public Window? MainWindow;
-        public UserViewModel? CurrentUser { get; set; } = null;
-        public static Window? Window { get; set; }
-        public bool unpackedApp = false;
-        public static AppSetting? AppSettings { get; set; }
-        public static string LocalAppDataPath = "";
-        public static string AppDataFolderPath = "";
-        public static string AppName = "SampleApp";
-        public static string SettingsFileName = "app_settings.json";
-        public const string SettingsContainer = "SettingsContainer";
-        public static ApplicationDataContainer? Settings = null;                
-
-        public IServiceProvider Services { get; }
-        
-        public App()
-        {            
-            Application.Current.DispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;            
-            Services = ConfigureServices();
-            this.InitializeComponent();
-            InitializeDb();
-            AppType();            
-            MainWindow = new MainWindow();
-            Window = new Window();
+        if (unpackedApp)
+        {
+            Debug.WriteLine("-- Unpacked App --");
+            AppSettings = new AppSetting("", "");
+            LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            AppDataFolderPath = System.IO.Path.Combine(LocalAppDataPath, AppName);
+            Directory.CreateDirectory(AppDataFolderPath); // Create the app folder if it doesn't exist
+            string filePath = System.IO.Path.Combine(AppDataFolderPath, SettingsFileName);                          
+            File.WriteAllText(filePath, "Settings data");                
+            string data = File.ReadAllText(filePath);
         }
-
-        public void AppType()
+        else
         {
-            if (unpackedApp)
-            {
-                Debug.WriteLine("-- Unpacked App --");
-                AppSettings = new AppSetting("", "");
-                LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                AppDataFolderPath = System.IO.Path.Combine(LocalAppDataPath, AppName);
-                Directory.CreateDirectory(AppDataFolderPath); // Create the app folder if it doesn't exist
-                string filePath = System.IO.Path.Combine(AppDataFolderPath, SettingsFileName);                          
-                File.WriteAllText(filePath, "Settings data");                
-                string data = File.ReadAllText(filePath);
-            }
-            else
-            {
-                Debug.WriteLine("-- Packed App --");
-                Settings = ApplicationData.Current.LocalSettings;
-                ApplicationDataContainer container = Settings.CreateContainer(SettingsContainer, ApplicationDataCreateDisposition.Always);
-            }
-        }        
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
-        {
-            Debug.WriteLine("ON LAUNCHED CALLED");
-            Application.Current.DispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;            
-            UseSqlite();            
-            if (!CheckForFirstTimeRun())
-            {
-                Debug.WriteLine("not checkfirstrun");
-                LoginWindow = new LoginWindow();
-                LoginWindow.Activate();
-            }
-            else
-            {
-                Debug.WriteLine("Is first run");
-                SetupWindow = new LoginWindow();
-                SetupWindow.Activate();
-            }
+            Debug.WriteLine("-- Packed App --");
+            Settings = ApplicationData.Current.LocalSettings;
+            ApplicationDataContainer container = Settings.CreateContainer(SettingsContainer, ApplicationDataCreateDisposition.Always);
         }
-
-        private static ServiceProvider ConfigureServices()
+    }        
+    protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+    {
+        Debug.WriteLine("ON LAUNCHED CALLED");
+        Application.Current.DispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;            
+        UseSqlite();            
+        if (!CheckForFirstTimeRun())
         {
-            var services = new ServiceCollection();
-            services.AddDbContext<SampleDbContext>();
-            return services.BuildServiceProvider();
+            Debug.WriteLine("not checkfirstrun");
+            LoginWindow = new LoginWindow();
+            LoginWindow.Activate();
         }
-
-        /// <summary>
-        /// Configures settings for a first time run.        
-        /// </summary>
-        private bool CheckForFirstTimeRun()
+        else
         {
-            Debug.WriteLine("-- CheckForFirstTimeRun --");
-            bool firstTime = false;
-            string settingsFileName = "appSettings.json";
-            string filePath = System.IO.Path.Combine(AppDataFolderPath, settingsFileName);
-            if (unpackedApp)
-            {
-                if (Directory.Exists(AppDataFolderPath))
-                {                    
-                    if (!File.Exists(filePath))
-                    {
-                        firstTime = true;
-                    }
-                    else
-                    {                        
-                        b(filePath);
-                    }
-                }
-                else
+            Debug.WriteLine("Is first run");
+            SetupWindow = new LoginWindow();
+            SetupWindow.Activate();
+        }
+    }
+
+    private static ServiceProvider ConfigureServices()
+    {
+        var services = new ServiceCollection();
+        services.AddDbContext<SampleDbContext>();
+        return services.BuildServiceProvider();
+    }
+
+    /// <summary>
+    /// Configures settings for a first time run.        
+    /// </summary>
+    private bool CheckForFirstTimeRun()
+    {
+        Debug.WriteLine("-- CheckForFirstTimeRun --");
+        bool firstTime = false;
+        string settingsFileName = "appSettings.json";
+        string filePath = System.IO.Path.Combine(AppDataFolderPath, settingsFileName);
+        if (unpackedApp)
+        {
+            if (Directory.Exists(AppDataFolderPath))
+            {                    
+                if (!File.Exists(filePath))
                 {
                     firstTime = true;
-                    Directory.CreateDirectory(AppDataFolderPath); // Create the app folder if it doesn't exist  
+                }
+                else
+                {                        
                     b(filePath);
                 }
             }
             else
             {
-                if (Settings.Containers.ContainsKey(SettingsContainer))
-                {
-                    Debug.WriteLine("contains settings");
-                    if (Settings.Containers[SettingsContainer].Values.ContainsKey(KeyWord.IS_FIRST_TIME))
-                    {                        
-                        firstTime = (bool)Settings.Containers[SettingsContainer].Values[KeyWord.IS_FIRST_TIME];
-                    }
-                    else
-                    {
-                        Debug.WriteLine("setting not found");
-                        firstTime = true;
-                    }
+                firstTime = true;
+                Directory.CreateDirectory(AppDataFolderPath); // Create the app folder if it doesn't exist  
+                b(filePath);
+            }
+        }
+        else
+        {
+            if (Settings.Containers.ContainsKey(SettingsContainer))
+            {
+                Debug.WriteLine("contains settings");
+                if (Settings.Containers[SettingsContainer].Values.ContainsKey(KeyWord.IS_FIRST_TIME))
+                {                        
+                    firstTime = (bool)Settings.Containers[SettingsContainer].Values[KeyWord.IS_FIRST_TIME];
                 }
                 else
                 {
-                    Debug.WriteLine("Container not found: SettingsContainer");
+                    Debug.WriteLine("setting not found");
+                    firstTime = true;
                 }
-                if (firstTime)
-                {
-
-                }
-            }
-            return firstTime;
-        }
-        private void b(string filePath)
-        {
-            Directory.CreateDirectory(AppDataFolderPath);
-                                                       
-            AppSetting appSettings = new AppSetting("", "");
-            string data = JsonSerializer.Serialize(appSettings);                       
-            File.WriteAllText(filePath, "Settings data");            
-        }
-
-        /// <summary>
-        /// Configures the app to use the Sqlite data source. If no existing Sqlite database exists,         
-        /// </summary>
-        private void UseSqlite()
-        {
-            Debug.WriteLine("in usesql lite");
-            if (unpackedApp)
-            {
-                Debug.WriteLine("UnPackaged App");
             }
             else
             {
-                Debug.WriteLine("Packaged App");
-                
-            }                                   
-            using (var scope = Services.CreateScope())
+                Debug.WriteLine("Container not found: SettingsContainer");
+            }
+            if (firstTime)
             {
-                var dbContext = scope.ServiceProvider.GetService<SampleDbContext>();
-                if (dbContext != null)
+
+            }
+        }
+        return firstTime;
+    }
+    private void b(string filePath)
+    {
+        Directory.CreateDirectory(AppDataFolderPath);
+                                                   
+        AppSetting appSettings = new AppSetting("", "");
+        string data = JsonSerializer.Serialize(appSettings);                       
+        File.WriteAllText(filePath, "Settings data");            
+    }
+
+    /// <summary>
+    /// Configures the app to use the Sqlite data source. If no existing Sqlite database exists,         
+    /// </summary>
+    private void UseSqlite()
+    {
+        Debug.WriteLine("in usesql lite");
+        if (unpackedApp)
+        {
+            Debug.WriteLine("UnPackaged App");
+        }
+        else
+        {
+            Debug.WriteLine("Packaged App");
+            
+        }                                   
+        using (var scope = Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetService<SampleDbContext>();
+            if (dbContext != null)
+            {
+                dbContext.Database.Migrate();
+            }
+        }
+    }
+
+    private void InitializeDb()
+    {
+        using (var scope = Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetService<SampleDbContext>();
+            if (dbContext != null)
+            {
+                dbContext.Database.Migrate();
+                if (!dbContext.Users.Any())
                 {
-                    dbContext.Database.Migrate();
+                    UserModel user1 = new UserModel
+                    {
+                        Id = 1,
+                        Username = "Fred"
+                    };
+
+                    UserModel user2 = new UserModel
+                    {
+                        Id = 2,
+                        Username = "Steve"
+                    };
+                    dbContext.Users.AddRange(user1, user2);
+                    dbContext.SaveChanges();
                 }
             }
         }
+        SetupStreetTypes();
+        SetupSuburbs();
+    }
 
-        private void InitializeDb()
+    private void SetupStreetTypes()
+    {
+        Debug.WriteLine("-- SetupStreetTypes --");
+        string path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Data\street_types.csv");
+
+        using (var reader = new StreamReader(path))
         {
-            using (var scope = Services.CreateScope())
+            List<StreetTypeModel> streetTypes = new List<StreetTypeModel>();
+            SampleDbContext context = new SampleDbContext();
+            context.StreetTypes.ExecuteDelete();
+            using (context)
             {
-                var dbContext = scope.ServiceProvider.GetService<SampleDbContext>();
-                if (dbContext != null)
+                while (!reader.EndOfStream)
                 {
-                    dbContext.Database.Migrate();
-                    if (!dbContext.Users.Any())
+                    var line = reader.ReadLine();
+                    var values = line.Split('\t');
+                    context.StreetTypes.Add(new StreetTypeModel()
                     {
-                        UserModel user1 = new UserModel
-                        {
-                            Id = 1,
-                            Username = "Fred"
-                        };
-
-                        UserModel user2 = new UserModel
-                        {
-                            Id = 2,
-                            Username = "Steve"
-                        };
-                        dbContext.Users.AddRange(user1, user2);
-                        dbContext.SaveChanges();
-                    }
+                        Id = int.Parse(values[0]),
+                        Code = values[1],
+                        Name = values[2]
+                    });
                 }
+                context.SaveChanges();
             }
-            SetupStreetTypes();
-            SetupSuburbs();
         }
+    }
+    private void SetupSuburbs()
+    {
+        Debug.WriteLine("-- SetupSuburbs --");
+        string path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Data\suburbs.csv");
 
-        private void SetupStreetTypes()
+        using (var reader = new StreamReader(path))
         {
-            Debug.WriteLine("-- SetupStreetTypes --");
-            string path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Data\street_types.csv");
-
-            using (var reader = new StreamReader(path))
+            SampleDbContext context = new SampleDbContext();
+            context.Suburbs.ExecuteDelete();
+            using (context)
             {
-                List<StreetTypeModel> streetTypes = new List<StreetTypeModel>();
-                SampleDbContext context = new SampleDbContext();
-                context.StreetTypes.ExecuteDelete();
-                using (context)
+                while (!reader.EndOfStream)
                 {
-                    while (!reader.EndOfStream)
+                    var line = reader.ReadLine();
+                    if (line != null)
                     {
-                        var line = reader.ReadLine();
-                        var values = line.Split('\t');
-                        context.StreetTypes.Add(new StreetTypeModel()
+                        var values = line.Split(',');
+                        Debug.WriteLine("poscode: " + values[0]);
+                        context.Suburbs.Add(new SuburbModel()
                         {
-                            Id = int.Parse(values[0]),
-                            Code = values[1],
-                            Name = values[2]
+                            PostCode = values[0],
+                            Name = values[1]
+
                         });
                     }
-                    context.SaveChanges();
                 }
-            }
-        }
-        private void SetupSuburbs()
-        {
-            Debug.WriteLine("-- SetupSuburbs --");
-            string path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Data\suburbs.csv");
-
-            using (var reader = new StreamReader(path))
-            {
-                SampleDbContext context = new SampleDbContext();
-                context.Suburbs.ExecuteDelete();
-                using (context)
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        var line = reader.ReadLine();
-                        if (line != null)
-                        {
-                            var values = line.Split(',');
-                            Debug.WriteLine("poscode: " + values[0]);
-                            context.Suburbs.Add(new SuburbModel()
-                            {
-                                PostCode = values[0],
-                                Name = values[1]
-
-                            });
-                        }
-                    }
-                    context.SaveChanges();
-                }
+                context.SaveChanges();
             }
         }
     }

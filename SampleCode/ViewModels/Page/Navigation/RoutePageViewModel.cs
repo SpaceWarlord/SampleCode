@@ -28,9 +28,14 @@ namespace SampleCode.ViewModels.Page.Navigation
             _routeService = new RouteService(new Models.SampleDbContext());
         }
 
-        public async Task AddUpdate(RouteViewModel viewModel)
+        public async Task Add(RouteViewModel viewModel)
         {
-            await viewModel.AddUpdate(_routeService);
+            await viewModel.Add();
+        }
+
+        public async Task Update(RouteViewModel viewModel)
+        {
+            await viewModel.Update();
         }
 
         public async Task LoadData()

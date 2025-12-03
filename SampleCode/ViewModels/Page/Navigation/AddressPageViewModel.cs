@@ -2,6 +2,7 @@
 using Models;
 using SampleCode.DTO.Navigation;
 using SampleCode.Extensions.Navigation;
+using SampleCode.Interfaces;
 using SampleCode.Services.Navigation;
 using SampleCode.ViewModels.Data.Navigation;
 using System.Collections.ObjectModel;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SampleCode.ViewModels.Page.Navigation
 {
-    public partial class AddressPageViewModel : PageViewModel
+    public partial class AddressPageViewModel : PageViewModel, IPageViewModel<AddressViewModel>
     {
         [ObservableProperty]
         private ObservableCollection<AddressViewModel> _pageItemsList;
@@ -22,7 +23,7 @@ namespace SampleCode.ViewModels.Page.Navigation
         private ObservableCollection<SuburbViewModel> _suburbs;
         private AddressService _addressService { get; set; }
         private StreetTypeService _streetTypeService { get; set; }
-        private SuburbService _suburbService { get; set; }
+        private SuburbService _suburbService { get; set; }        
 
         public AddressPageViewModel()
         {
@@ -51,12 +52,16 @@ namespace SampleCode.ViewModels.Page.Navigation
             ObservableCollection<SuburbDTO> suburbDTOs = await _suburbService.GetAll();
             Suburbs.Clear();
             Suburbs = new ObservableCollection<SuburbViewModel>(suburbDTOs.ToViewModels());
+        }        
+
+        public async Task Add(AddressViewModel viewModel)
+        {
+            await viewModel.Add();
         }
 
-        public async Task AddUpdate(AddressViewModel viewModel)
+        public async Task Update(AddressViewModel viewModel)
         {
-            Debug.WriteLine("-- AddUpdate --");
-            await viewModel.AddUpdate(_addressService);
-        }        
+            await viewModel.Update();
+        }
     }
 }

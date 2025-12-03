@@ -1,13 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Models;
-using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SampleCode.Other
 {
     [Table("User", Schema = "TPT")]
     [Index(nameof(Username), IsUnique = true)]
-    public class UserModel : BaseModel
+    public class UserModel
     {
         public required int Id { get; set; }
         public required string Username { get; set; }

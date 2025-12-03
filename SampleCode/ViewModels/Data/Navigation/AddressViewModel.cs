@@ -1,8 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SampleCode.Extensions.Navigation;
-using SampleCode.Services.Navigation;
+using Models;
+using Models.Navigation;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
@@ -55,26 +54,43 @@ namespace SampleCode.ViewModels.Data.Navigation
             StreetName = streetName;
             StreetType = streetType;
             Suburb = suburb;
-            City = "Adelaide";
+            City = "New York";
             GPS = gps;
+        }        
+
+        public async Task Add()
+        {
+            var db = new SampleDbContext();
+            var model = new AddressModel()
+            {
+                Name = Name,
+                UnitNum = UnitNum,
+                StreetNum = StreetNum,
+                StreetName = StreetName,
+                StreetTypeId = StreetType.Id,
+                SuburbId = Suburb.Id,
+            };
+            db.Addresses.Add(model);
+            await db.SaveChangesAsync();
         }
 
-        public async Task AddUpdate(AddressService addressService)
+        public async Task Update()
         {
-            Debug.WriteLine("-- AddUpdate --");
-            IsModified = false;
-            if (IsNew)
-            {                
-                IsNew = false;
-                int result = await addressService.AddUpdate(this.ToDto());
-                if (result != 0)
+            if (Id != 0)
+            {
+                var db = new SampleDbContext();
+                var model = new AddressModel()
                 {
-                    Id = result;
-                }
-                else
-                {
-                    Debug.WriteLine("Error Adding");
-                }
+                    Id = Id,
+                    Name = Name,
+                    UnitNum = UnitNum,
+                    StreetNum = StreetNum,
+                    StreetName = StreetName,
+                    StreetTypeId = StreetType.Id,
+                    SuburbId = Suburb.Id,
+                };                               
+                db.Addresses.Update(model);
+                await db.SaveChangesAsync();
             }
         }
     }

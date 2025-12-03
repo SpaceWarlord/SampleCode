@@ -46,5 +46,15 @@ namespace SampleCode.ViewModels.Page.Navigation
             Addresses = new ObservableCollection<AddressViewModel>(addressDTOs.ToViewModels());
             Debug.WriteLine("Total adddresses: " + Addresses.Count);
         }
+
+        public Task Add(RouteAddressViewModel viewModel)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task Update(RouteAddressViewModel viewModel)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
