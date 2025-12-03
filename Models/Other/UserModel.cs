@@ -1,0 +1,26 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Models;
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SampleCode.Other
+{
+    [Table("User", Schema = "TPT")]
+    [Index(nameof(Username), IsUnique = true)]
+    public class UserModel : BaseModel
+    {
+        public required int Id { get; set; }
+        public required string Username { get; set; }
+        public int? SettingId { get; set; }
+
+        [ForeignKey("SettingId")]
+        public SettingModel? CurrentSetting { get; set; }
+
+        public bool DefaultUser { get; set; } = false;
+
+        public UserModel()
+        {
+
+        }
+    }
+}

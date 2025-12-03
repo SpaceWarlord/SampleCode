@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="SampleCode.Views.Navigation.AddressPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dataGrid="using:Syncfusion.UI.Xaml.DataGrid"
+    xmlns:editors="using:Syncfusion.UI.Xaml.Editors"
+    xmlns:local="using:SampleCode.Views.Navigation"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Models"
+    xmlns:pageViewModels="using:SampleCode.ViewModels.Page.Navigation"
+    xmlns:viewModels="using:SampleCode.ViewModels"
+    x:Name="ThisPage"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Loaded="OnPageLoad"
+    mc:Ignorable="d">
+
+    <Page.DataContext>
+        <pageViewModels:AddressPageViewModel />
+    </Page.DataContext>
+
+    <Grid x:Name="RootGrid" Margin="40,40,20,80">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <dataGrid:SfDataGrid
+            x:Name="MainDataGrid"
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            AddNewRowPosition="Top"
+            AllowEditing="True"
+            AutoGenerateColumns="False"
+            ColumnWidthMode="Star"
+            GridLinesVisibility="Both">
+            <dataGrid:SfDataGrid.Columns>
+                <dataGrid:GridTextColumn HeaderText="Name" MappingName="Name" />
+                <dataGrid:GridTextColumn HeaderText="Unit Num" MappingName="UnitNum" />
+                <dataGrid:GridTextColumn HeaderText="Street Num" MappingName="StreetNum" />
+                <dataGrid:GridTextColumn HeaderText="Street Name" MappingName="StreetName" />
+                <dataGrid:GridTemplateColumn HeaderText="Street Type" MappingName="StreetType">
+                    <dataGrid:GridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding StreetType.Name}" />
+                        </DataTemplate>
+                    </dataGrid:GridTemplateColumn.CellTemplate>
+                    <dataGrid:GridTemplateColumn.EditTemplate>
+                        <DataTemplate>
+                            <editors:SfAutoComplete
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding DataContext.StreetTypes, ElementName=RootGrid}"
+                                SelectedItem="{Binding StreetType, Mode=TwoWay}" />
+                        </DataTemplate>
+                    </dataGrid:GridTemplateColumn.EditTemplate>
+                </dataGrid:GridTemplateColumn>
+                <dataGrid:GridTemplateColumn HeaderText="Suburb" MappingName="Suburb">
+                    <dataGrid:GridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Suburb.Name}" />
+                        </DataTemplate>
+                    </dataGrid:GridTemplateColumn.CellTemplate>
+
+                    <dataGrid:GridTemplateColumn.EditTemplate>
+                        <DataTemplate>
+                            <ComboBox
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding DataContext.Suburbs, ElementName=RootGrid}"
+                                SelectedItem="{Binding Suburb, Mode=TwoWay}" />
+                        </DataTemplate>
+                    </dataGrid:GridTemplateColumn.EditTemplate>
+                </dataGrid:GridTemplateColumn>
+            </dataGrid:SfDataGrid.Columns>
+        </dataGrid:SfDataGrid>
+    </Grid>
+</Page>

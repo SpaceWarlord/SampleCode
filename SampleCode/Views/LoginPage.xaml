@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="SampleCode.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SampleCode.Views"
+    xmlns:m="using:Models"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:SampleCode.ViewModels.Data"
+    x:Name="root"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Loaded="Grid_Loaded">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.2*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.3*" />
+            <ColumnDefinition Width="0.3*" />
+            <ColumnDefinition Width="0.3*" />
+        </Grid.ColumnDefinitions>
+        <Border BorderBrush="Black" BorderThickness="1" />
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="0"
+            FontSize="30">
+            LOGIN
+        </TextBlock>
+        <ListView
+            x:Name="usersListView"
+            Grid.Row="1"
+            Grid.Column="0"
+            ItemsSource="{x:Bind ViewModel.Users, Mode=TwoWay}">
+            <ListView.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.3*" />
+                        <ColumnDefinition Width="0.3*" />
+                        <ColumnDefinition Width="0.3*" />
+                    </Grid.ColumnDefinitions>
+                    <ListViewHeaderItem Grid.Column="0">
+                        <TextBlock>Username</TextBlock>
+                    </ListViewHeaderItem>
+                    <ListViewHeaderItem Grid.Column="2">
+                        <TextBlock>Delete</TextBlock>
+                    </ListViewHeaderItem>
+                </Grid>
+            </ListView.Header>
+
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="vm:UserViewModel">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.3*" />
+                            <ColumnDefinition Width="0.3*" />
+                            <ColumnDefinition Width="0.3*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{x:Bind Username}" />
+                        <Button
+                            Grid.Column="2"
+                            Command="{Binding DataContext.DeleteUserCommand, Mode=OneWay, ElementName=root}"
+                            CommandParameter="{x:Bind Mode=OneWay}"
+                            Content="X" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Button
+            x:Name="loginBtn"
+            Grid.Row="3"
+            Grid.Column="2"
+            Command="{x:Bind ViewModel.LoginCommand}"
+            CommandParameter="{Binding SelectedItem, ElementName=usersListView}"
+            Content="Login" />
+        <TextBlock
+            Grid.Row="4"
+            Grid.Column="0"
+            FontSize="30">
+            New User
+        </TextBlock>
+        <TextBlock Grid.Row="5" Grid.Column="0">Name</TextBlock>
+        <TextBox
+            x:Name="newUserName"
+            Grid.Row="5"
+            Grid.Column="1"
+            Text="{x:Bind ViewModel.NewUser.Username, Mode=TwoWay}" />
+        <Button
+            x:Name="addUserBtn"
+            Grid.Row="5"
+            Grid.Column="2"
+            Click="{x:Bind ViewModel.AddUserToDB}">
+            Add User
+        </Button>
+    </Grid>
+</Page>

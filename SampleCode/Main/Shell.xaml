@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Window
+    x:Class="SampleCode.Main.Shell"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SampleCode.Main"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid
+        x:Name="Root"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch">
+        <StackPanel Orientation="Vertical">
+            <StackPanel>
+                <TextBlock x:Name="currentUserTextBlock" FontSize="50" />
+            </StackPanel>
+            <!--  Main Beef  -->
+            <NavigationView
+                x:Name="NavigationView"
+                Margin="0"
+                Background="Transparent"
+                Header="XAML Brewer WinUI TableView Sample"
+                IsBackButtonVisible="Collapsed"
+                IsSettingsVisible="False"
+                Loaded="NavigationView_Loaded"
+                SelectionChanged="NavigationView_SelectionChanged">
+                <NavigationView.MenuItems>
+                    <NavigationViewItem
+                        Content="Home"
+                        Tag="{x:Bind x:String.Format('{0}HomePage', pagePath)}"
+                        ToolTipService.ToolTip="Home">
+                        <NavigationViewItem.Icon>
+                            <BitmapIcon ShowAsMonochrome="False" UriSource="/Assets/Galaxy.png" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem
+                        Content="Home"
+                        Tag="{x:Bind x:String.Format('{0}HomePage', pagePath)}"
+                        ToolTipService.ToolTip="Home">
+                        <NavigationViewItem.Icon>
+                            <BitmapIcon ShowAsMonochrome="False" UriSource="/Assets/Galaxy.png" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem Content="Navigation" ToolTipService.ToolTip="Navigation">
+                        <NavigationViewItem.Icon>
+                            <BitmapIcon ShowAsMonochrome="False" UriSource="/Assets/Galaxy.png" />
+                        </NavigationViewItem.Icon>
+                        <NavigationViewItem.MenuItems>
+                            <NavigationViewItem
+                                Content="Addresses"
+                                Tag="{x:Bind x:String.Format('{0}Navigation.AddressPage', pagePath)}"
+                                ToolTipService.ToolTip="Addresses">
+                                <NavigationViewItem.Icon>
+                                    <BitmapIcon ShowAsMonochrome="False" UriSource="/Assets/Galaxy.png" />
+                                </NavigationViewItem.Icon>
+                            </NavigationViewItem>
+                            <NavigationViewItem
+                                Content="Routes"
+                                Tag="{x:Bind x:String.Format('{0}Navigation.RoutePage', pagePath)}"
+                                ToolTipService.ToolTip="Routes">
+                                <NavigationViewItem.Icon>
+                                    <BitmapIcon ShowAsMonochrome="False" UriSource="/Assets/Galaxy.png" />
+                                </NavigationViewItem.Icon>
+                            </NavigationViewItem>
+                            <NavigationViewItem
+                                Content="Logbooks"
+                                Tag="{x:Bind x:String.Format('{0}Navigation.LogbookPage', pagePath)}"
+                                ToolTipService.ToolTip="Logbooks">
+                                <NavigationViewItem.Icon>
+                                    <BitmapIcon ShowAsMonochrome="False" UriSource="/Assets/Galaxy.png" />
+                                </NavigationViewItem.Icon>
+                            </NavigationViewItem>
+                        </NavigationViewItem.MenuItems>
+                    </NavigationViewItem>
+                    <NavigationViewItem
+                        Content="Settings"
+                        Tag="{x:Bind x:String.Format('{0}SettingsPage', pagePath)}"
+                        ToolTipService.ToolTip="Settings">
+                        <NavigationViewItem.Icon>
+                            <BitmapIcon ShowAsMonochrome="False" UriSource="/Assets/Galaxy.png" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem
+                        Content="Logout"
+                        Tag="SampleCode.Views.AdvancedPage"
+                        ToolTipService.ToolTip="Logout">
+                        <NavigationViewItem.Icon>
+                            <BitmapIcon ShowAsMonochrome="False" UriSource="/Assets/BlackHole.png" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                </NavigationView.MenuItems>
+                <NavigationView.FooterMenuItems>
+                    <NavigationViewItem Content="About" Tag="SampleCode.Views.AboutPage">
+                        <NavigationViewItem.Icon>
+                            <BitmapIcon ShowAsMonochrome="False" UriSource="/Assets/About.png" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                </NavigationView.FooterMenuItems>
+                <Frame x:Name="ContentFrame" Padding="20" />
+            </NavigationView>
+
+            <Button
+                x:Name="ResetBtn"
+                Click="ResetBtn_Click"
+                Content="Reset" />
+            <!--  Theme Switcher  -->
+            <Button
+                Margin="16"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                HorizontalContentAlignment="Right"
+                Background="Transparent"
+                Click="ToggleButton_Click">
+                <FontIcon FontSize="16" Glyph="&#xE793;" />
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

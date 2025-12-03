@@ -1,0 +1,13 @@
+﻿using SampleCode.ViewModels.Data;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+
+namespace SampleCode.Interfaces
+{
+    public interface IPageViewModel<T> where T : DataViewModel
+    {
+        ObservableCollection<T> PageItemsList { get; set; }
+        Task LoadData();
+        Task AddUpdate(T viewModel);
+    }
+}

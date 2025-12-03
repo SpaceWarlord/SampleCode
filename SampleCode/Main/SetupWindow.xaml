@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Window
+    x:Class="SampleCode.Main.SetupWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SampleCode.Main"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="SetupWindow"
+    mc:Ignorable="d">
+
+    <StackPanel Loaded="StackPanel_Loaded">
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Text="Setup" />
+
+        <controls:SettingsCard Header="Base Folder">
+            <controls:SettingsCard.Description>
+                <TextBlock Text="The folder where all the data will be saved too" />
+            </controls:SettingsCard.Description>
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    x:Name="PickBaseFolderButton"
+                    Margin="0,0,0,10"
+                    Click="PickBaseFolderButton_Click"
+                    Content="Open a folder" />
+                <TextBlock
+                    x:Name="PickBaseFolderOutputTextBlock"
+                    Padding="20,5,0,0"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+        </controls:SettingsCard>
+
+        <controls:SettingsCard Description="The database to use for this program. Use an existing one or create a new blank one" Header="Database File">
+            <ToggleSwitch
+                x:Name="NewDatabaseSwitch"
+                IsOn="False"
+                OffContent="Existing Database"
+                OnContent="New Database"
+                Toggled="DatabaseSwitch_Toggled" />
+        </controls:SettingsCard>
+        <StackPanel
+            x:Name="NewDatabasePanel"
+            Orientation="Vertical"
+            Visibility="Collapsed">
+            <controls:SettingsCard x:Name="NewDatabaseNameCard" Description="">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        Padding="20,5,0,0"
+                        Text="Database name:"
+                        TextWrapping="Wrap" />
+                    <TextBox x:Name="NewDatabaseFileName" />
+                </StackPanel>
+            </controls:SettingsCard>
+            <controls:SettingsCard x:Name="NewDatabaseFolderCard" Description="">
+                <StackPanel Orientation="Horizontal">
+                    <Button
+                        x:Name="PickNewDatabaseFolderButton"
+                        Margin="0,0,0,10"
+                        Click="PickNewDatabaseFolderButton_Click"
+                        Content="Database Folder" />
+                    <TextBlock
+                        x:Name="PickNewDatabaseFolderOutputTextBlock"
+                        Padding="20,5,0,0"
+                        TextWrapping="Wrap" />
+                </StackPanel>
+            </controls:SettingsCard>
+        </StackPanel>
+        <StackPanel
+            x:Name="ExistingDatabasePanel"
+            Orientation="Horizontal"
+            Visibility="Collapsed">
+            <controls:SettingsCard>
+                <Button
+                    x:Name="PickExistingDatabaseButton"
+                    Margin="0,0,0,10"
+                    Click="PickExistingDatabaseButton_Click"
+                    Content="Open a file" />
+            </controls:SettingsCard>
+            <controls:SettingsCard>
+                <TextBlock
+                    x:Name="PickExistingDatabaseOutputTextBlock"
+                    Padding="20,5,0,0"
+                    TextWrapping="Wrap" />
+            </controls:SettingsCard>
+        </StackPanel>
+        <Button
+            x:Name="SaveBtn"
+            Click="SaveBtn_Click"
+            Content="SAVE" />
+    </StackPanel>
+</Window>
