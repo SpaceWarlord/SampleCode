@@ -1,14 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Models;
 using Models.Navigation;
+using SampleCode.Extensions.Navigation;
+using SampleCode.Interfaces;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SampleCode.ViewModels.Data.Navigation
 {
-    public partial class RouteViewModel : DataViewModel
+    public partial class RouteViewModel : DataViewModel, IViewModel<RouteViewModel>
     {
         [ObservableProperty]
         [Required]
@@ -36,6 +39,13 @@ namespace SampleCode.ViewModels.Data.Navigation
             Distance = distance;
         }
 
+        public static IQueryable<RouteViewModel> GetAll()
+        {
+            var db = new SampleDbContext();
+            IQueryable<RouteViewModel> query = db.Routes.Select(c => new RouteViewModel(c.Id, c.Name, new ObservableCollection<RouteAddressViewModel>(c.RouteAddresses.ToViewModels()), c.Distance));
+            return query;
+        }
+
         public async Task Add()
         {
             var db = new SampleDbContext();
@@ -47,6 +57,11 @@ namespace SampleCode.ViewModels.Data.Navigation
             };
             db.Routes.Add(model);
             await db.SaveChangesAsync();
+        }
+
+        public Task Delete()
+        {
+            throw new System.NotImplementedException();
         }
 
         public async Task Update()

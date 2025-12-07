@@ -1,11 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SampleCode.DTO.Navigation;
-using SampleCode.Extensions.Navigation;
 using SampleCode.Interfaces;
-using SampleCode.Services.Navigation;
 using SampleCode.ViewModels.Data.Navigation;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace SampleCode.ViewModels.Page.Navigation
@@ -16,16 +12,12 @@ namespace SampleCode.ViewModels.Page.Navigation
         private ObservableCollection<RouteViewModel> _pageItemsList;
 
         [ObservableProperty]
-        private RouteAddressPageViewModel _subPageViewModel;
-
-        private RouteService _routeService { get; set; }
-
+        private RouteAddressPageViewModel _subPageViewModel;       
 
         public RoutePageViewModel()
         {
             PageItemsList = new ObservableCollection<RouteViewModel>();
-            SubPageViewModel = new RouteAddressPageViewModel();
-            _routeService = new RouteService(new Models.SampleDbContext());
+            SubPageViewModel = new RouteAddressPageViewModel();            
         }
 
         public async Task Add(RouteViewModel viewModel)
@@ -40,10 +32,13 @@ namespace SampleCode.ViewModels.Page.Navigation
 
         public async Task LoadData()
         {
-            PageItemsList.Clear();
-            ObservableCollection<RouteDTO> routeDTOs = await _routeService.GetAll();
-            Debug.WriteLine("total route dtos " + routeDTOs.Count);
-            PageItemsList = new ObservableCollection<RouteViewModel>(routeDTOs.ToViewModels());
+            PageItemsList.Clear();                        
+            PageItemsList = new ObservableCollection<RouteViewModel>(RouteViewModel.GetAll());
+        }
+
+        public Task Delete(RouteViewModel viewModel)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

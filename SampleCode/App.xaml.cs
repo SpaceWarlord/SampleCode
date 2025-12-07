@@ -207,8 +207,8 @@ public partial class App : Application
                 }
             }
         }
-        SetupStreetTypes();
-        SetupSuburbs();
+        //SetupStreetTypes();
+        //SetupSuburbs();
     }
 
     private void SetupStreetTypes()
@@ -220,7 +220,7 @@ public partial class App : Application
         {
             List<StreetTypeModel> streetTypes = new List<StreetTypeModel>();
             SampleDbContext context = new SampleDbContext();
-            context.StreetTypes.ExecuteDelete();
+            //context.StreetTypes.ExecuteDelete();
             using (context)
             {
                 while (!reader.EndOfStream)
@@ -246,7 +246,7 @@ public partial class App : Application
         using (var reader = new StreamReader(path))
         {
             SampleDbContext context = new SampleDbContext();
-            context.Suburbs.ExecuteDelete();
+            //context.Suburbs.ExecuteDelete();
             using (context)
             {
                 while (!reader.EndOfStream)

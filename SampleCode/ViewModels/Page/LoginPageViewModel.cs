@@ -1,30 +1,26 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
-using Models;
-using SampleCode.DTO;
+using SampleCode.Interfaces;
 using SampleCode.Main;
-using SampleCode.Other;
-using SampleCode.Services;
 using SampleCode.ViewModels.Data;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace SampleCode.ViewModels.Page
 {
-    public partial class LoginPageViewModel : PageViewModel
-    {
-        public ObservableCollection<UserViewModel> Users;
-
-        public UserService UserService { get; set; }
+    public partial class LoginPageViewModel : PageViewModel, IPageViewModel<UserViewModel>
+    {               
         public UserViewModel NewUser { get; set; }
+
+        [ObservableProperty]
+        public ObservableCollection<UserViewModel> _pageItemsList;
+
         public LoginPageViewModel()
-        {
-            UserService = new UserService(new SampleDbContext());
-            Users = new ObservableCollection<UserViewModel>();
+        {                        
+            PageItemsList = new ObservableCollection<UserViewModel>();
             NewUser = new UserViewModel(0, "");
             
         }
@@ -55,102 +51,35 @@ namespace SampleCode.ViewModels.Page
                 Debug.WriteLine("User was null");
             }
         }        
-
-        /// <summary>
-        /// Deletes user from database, then refreshes user list
-        /// </summary>
-
-        [RelayCommand]
-        private async Task DeleteUser(UserViewModel user)
+                                                  
+        public async Task LoadData()
         {
-            Debug.WriteLine("-- DeleteUser --");
-            await user.DeleteAsync();
-            await GetAll();
-
-            //Users.Remove(user);
+            PageItemsList.Clear();
+            PageItemsList = new ObservableCollection<UserViewModel>(UserViewModel.GetAll());
         }
 
         [RelayCommand]
-        public async Task AddUser(object o)
-        {
-            Debug.WriteLine("-- AddUser --");
-            if (o != null)
-            {                
-                string? username = o as string;                
-                if (!string.IsNullOrWhiteSpace(username))
-                {
-                    Users.Clear();
-                    ObservableCollection<UserDTO> userDTOList = await UserService.GetAll();
-                    foreach (UserDTO userDTO in userDTOList)
-                    {
-                        Users.Add(new UserViewModel(userDTO.Id, userDTO.Username));
-                    }
-                    
-                }
-                else
-                {
-                    Debug.WriteLine("Username was empty or blank");
-                }
-            }
-        }
-
-        [RelayCommand]
-        private void ModifyName(object o)
-        {
-            Debug.WriteLine("-- ModifiyName --");
-            string oldName = "fred";
-            
-            if (o != null)
-            {
-                string newUsername = o as string;                
-                if (newUsername != String.Empty)
-                {                    
-                    for (int i = Users.Count - 1; i >= 0; i--)
-                    {                        
-                        if (Users[i].Username == oldName)
-                        {
-                            Users[i].Username = newUsername;                                                       
-                        }
-                    }
-                }
-                else
-                {
-                    Debug.WriteLine("Textbox empty");
-                }
-            }
-        }
-
-        public void UpdateUsers(List<UserModel> users)
-        {
-            Users.Clear();            
-            UserViewModel u;
-            foreach (UserModel user in users)
-            {
-                u = new UserViewModel(user.Id, user.Username);
-                u.Username = user.Username;                
-                Users.Add(u);
-            }
-        }
-
-        /// <summary>
-        /// Saves user to database then clears fields 
-        /// </summary>
-        public async Task AddUserToDB()
-        {
-            Debug.WriteLine("--AddUserToDb--");
-            await NewUser.SaveAsync(UserService);
-            NewUser = new(0, "");
-            await GetAll();
-        }        
-
         public async Task GetAll()
         {
-            ObservableCollection<UserDTO> userDTOList = await UserService.GetAll();                       
-            Users.Clear();
-            foreach (UserDTO userDTO in userDTOList)
-            {                
-                Users.Add(new UserViewModel(userDTO.Id, userDTO.Username));
-            }
-        }        
+            UserViewModel.GetAll();
+        }
+
+        [RelayCommand]
+        public async Task Add(UserViewModel viewModel)
+        {
+            await viewModel.Add();
+        }
+
+        [RelayCommand]
+        public async Task Update(UserViewModel viewModel)
+        {
+            await viewModel.Update();
+        }
+
+        [RelayCommand]
+        public Task Delete(UserViewModel viewModel)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

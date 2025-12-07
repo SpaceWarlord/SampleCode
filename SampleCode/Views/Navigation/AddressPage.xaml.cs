@@ -1,3 +1,5 @@
+namespace SampleCode.Views.Navigation;
+
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SampleCode.Interfaces;
@@ -5,8 +7,8 @@ using SampleCode.ViewModels.Data.Navigation;
 using SampleCode.ViewModels.Page.Navigation;
 using Syncfusion.UI.Xaml.DataGrid;
 using System.Diagnostics;
+using System.Xml.Linq;
 
-namespace SampleCode.Views.Navigation;
 
 public sealed partial class AddressPage : Page, IDataGrid<AddressPageViewModel>
 {
@@ -19,7 +21,7 @@ public sealed partial class AddressPage : Page, IDataGrid<AddressPageViewModel>
         MainDataGrid.AddNewRowInitiating += MainDataGrid_AddNewRowInitiating;
         MainDataGrid.DataValidationMode = Syncfusion.UI.Xaml.Grids.GridValidationMode.InView;
         MainDataGrid.RowValidated += MainDataGrid_RowValidated;
-        MainDataGrid.RowValidating += MainDataGrid_RowValidating;
+        MainDataGrid.RowValidating += MainDataGrid_RowValidating;        
     }
 
     public async void OnPageLoad(object sender, RoutedEventArgs e)
@@ -31,7 +33,6 @@ public sealed partial class AddressPage : Page, IDataGrid<AddressPageViewModel>
 
     public void OnMainGridLoad(object sender, RoutedEventArgs e)
     {
-
         Debug.WriteLine("-- OnMainGridLoad --");            
     }
 
@@ -96,10 +97,24 @@ public sealed partial class AddressPage : Page, IDataGrid<AddressPageViewModel>
 
     public async void MainDataGrid_RowValidated(object? sender, RowValidatedEventArgs e)
     {
-        AddressViewModel? address = e.RowData as AddressViewModel;
+        AddressViewModel? address = MainDataGrid.SelectedItem as AddressViewModel;
+        Debug.WriteLine("Selected row data " + e.RowData.ToString());
         if (address != null)
         {
-            await PageViewModel.Add(address);
+            Debug.WriteLine("Selected item is " + MainDataGrid.SelectedItem.ToString());
+            await address.Update();            
+            Debug.WriteLine("UPDATING");       
+        }
+        else
+        {
+            Debug.WriteLine("Selected item was null");
+            address=new AddressViewModel();
+            address = e.RowData as AddressViewModel;
+            if (address!=null)
+            {
+                Debug.WriteLine("Adding it");
+                await address.Add();
+            }            
         }
     }        
 }

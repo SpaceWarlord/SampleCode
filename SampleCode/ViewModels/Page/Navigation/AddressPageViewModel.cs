@@ -1,9 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Models;
-using SampleCode.DTO.Navigation;
-using SampleCode.Extensions.Navigation;
 using SampleCode.Interfaces;
-using SampleCode.Services.Navigation;
 using SampleCode.ViewModels.Data.Navigation;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -20,38 +16,28 @@ namespace SampleCode.ViewModels.Page.Navigation
         private ObservableCollection<StreetTypeViewModel> _streetTypes;
 
         [ObservableProperty]
-        private ObservableCollection<SuburbViewModel> _suburbs;
-        private AddressService _addressService { get; set; }
-        private StreetTypeService _streetTypeService { get; set; }
-        private SuburbService _suburbService { get; set; }        
+        private ObservableCollection<SuburbViewModel> _suburbs;                      
 
         public AddressPageViewModel()
         {
             Debug.WriteLine("-- AddressPageViewModel Constructor--");
             PageItemsList = new ObservableCollection<AddressViewModel>();
             StreetTypes = new ObservableCollection<StreetTypeViewModel>();
-            Suburbs = new ObservableCollection<SuburbViewModel>();
-
-            _addressService = new AddressService(new SampleDbContext());
-            _streetTypeService = new StreetTypeService(new SampleDbContext());
-            _suburbService = new SuburbService(new SampleDbContext());
+            Suburbs = new ObservableCollection<SuburbViewModel>();                                   
         }
 
         public async Task LoadData()
         {
             Debug.WriteLine("-- LoadData --");
-
-            ObservableCollection<AddressDTO> addressDTOs = await _addressService.GetAll();
-            PageItemsList.Clear();
-            PageItemsList = new ObservableCollection<AddressViewModel>(addressDTOs.ToViewModels());
-
-            ObservableCollection<StreetTypeDTO> streetTypeDTOs = await _streetTypeService.GetAll();
+            
+            PageItemsList.Clear();            
+            PageItemsList = new ObservableCollection<AddressViewModel>(AddressViewModel.GetAll());
+            Debug.WriteLine("Total Addresses found: " + PageItemsList.Count);            
             StreetTypes.Clear();
-            StreetTypes = new ObservableCollection<StreetTypeViewModel>(streetTypeDTOs.ToViewModels());
-
-            ObservableCollection<SuburbDTO> suburbDTOs = await _suburbService.GetAll();
+            StreetTypes = new ObservableCollection<StreetTypeViewModel>(StreetTypeViewModel.GetAll());
+            
             Suburbs.Clear();
-            Suburbs = new ObservableCollection<SuburbViewModel>(suburbDTOs.ToViewModels());
+            Suburbs = new ObservableCollection<SuburbViewModel>(SuburbViewModel.GetAll());
         }        
 
         public async Task Add(AddressViewModel viewModel)
@@ -62,6 +48,11 @@ namespace SampleCode.ViewModels.Page.Navigation
         public async Task Update(AddressViewModel viewModel)
         {
             await viewModel.Update();
+        }
+
+        public Task Delete(AddressViewModel viewModel)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

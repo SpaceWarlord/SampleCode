@@ -10,4 +10,6 @@ public interface IPageViewModel<T> where T : DataViewModel
     Task LoadData();
     Task Add(T viewModel);
     Task Update(T viewModel);
+
+    Task Delete(T viewModel);
 }

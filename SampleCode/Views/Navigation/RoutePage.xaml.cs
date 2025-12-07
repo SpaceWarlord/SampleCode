@@ -144,7 +144,7 @@ public sealed partial class RoutePage : Page, ISubDataGrid<RoutePageViewModel, R
         if (routeAddress != null)
         {
             Debug.WriteLine("It's validated");
-            await SubPageViewModel.AddUpdate(routeAddress);
+            //await SubPageViewModel.AddUpdate(routeAddress);
         }
         else
         {

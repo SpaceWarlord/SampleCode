@@ -1,9 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Models;
+using SampleCode.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SampleCode.ViewModels.Data.Navigation
 {
-    public partial class SuburbViewModel : DataViewModel
+    public partial class SuburbViewModel : DataViewModel, IViewModel<SuburbViewModel>
     {
         [Key]
         [ObservableProperty]
@@ -26,6 +30,28 @@ namespace SampleCode.ViewModels.Data.Navigation
             Id = id;
             Name = name;
             PostCode = postCode;
+        }
+
+        public static IQueryable<SuburbViewModel> GetAll()
+        {
+            var db = new SampleDbContext();
+            IQueryable<SuburbViewModel> query = db.Suburbs.Select(c => new SuburbViewModel(c.Id, c.Name, c.PostCode));
+            return query;
+        }
+
+        public Task Add()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task Delete()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task Update()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

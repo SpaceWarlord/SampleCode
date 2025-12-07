@@ -1,14 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using SampleCode.Extensions;
-using SampleCode.Services;
+using Models;
+using SampleCode.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SampleCode.ViewModels.Data
 {
-    public partial class UserViewModel : DataViewModel
+    public partial class UserViewModel : DataViewModel, IViewModel<UserViewModel>
     {
         [ObservableProperty]
         private int _id;
@@ -24,45 +24,28 @@ namespace SampleCode.ViewModels.Data
         {
             Id = id;
             Username = username;
+        }                       
+
+        public Task Add()
+        {
+            throw new System.NotImplementedException();
         }
 
-        /// <summary>
-        /// Saves user data that has been edited.
-        /// </summary>
-        //public async Task<bool> SaveAsync()
-        public async Task SaveAsync(UserService userService)
+        public Task Update()
         {
-            Debug.WriteLine("Called Save Async. Username: " + Username);
-            IsModified = false;
-            if (IsNew)
-            {
-                Debug.WriteLine("its new");
-
-                IsNew = false;
-                await userService.Add(this.ToDto());
-
-                
-            }            
+            throw new System.NotImplementedException();
         }
 
-        /// <summary>
-        /// Deletes a user
-        /// </summary>
-        /// 
-
-        public async Task DeleteAsync()
+        public Task Delete()
         {
-            //await App.Repository.Users.DeleteAsync(Id);
+            throw new System.NotImplementedException();
         }
 
-
-
-        [RelayCommand]
-        private void DeleteUser(int id)
+        public static IQueryable<UserViewModel> GetAll()
         {
-            Debug.WriteLine("called delete user");
-            //Debug.WriteLine("id: " + id);
-            //Users.Remove(user);
-        }              
+            var db = new SampleDbContext();
+            IQueryable<UserViewModel> query = db.Users.Select(c => new UserViewModel(c.Id, c.Username));
+            return query;
+        }
     }
 }
