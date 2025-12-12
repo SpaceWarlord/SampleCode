@@ -1,46 +1,63 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Models.Navigation;
 using SampleCode.Interfaces;
 using SampleCode.ViewModels.Data.Navigation;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace SampleCode.ViewModels.Page.Navigation
+namespace SampleCode.ViewModels.Page.Navigation;
+
+public partial class RouteAddressPageViewModel : PageViewModel, IPageViewModel<RouteAddressViewModel>
 {
-    public partial class RouteAddressPageViewModel : PageViewModel, IPageViewModel<RouteAddressViewModel>
+    [ObservableProperty]
+    private ObservableCollection<RouteAddressViewModel> _pageItemsList;
+
+    [ObservableProperty]
+    private ObservableCollection<AddressViewModel> _addresses;        
+    
+    public RouteAddressPageViewModel()
     {
-        [ObservableProperty]
-        private ObservableCollection<RouteAddressViewModel> _pageItemsList;
+        PageItemsList = new ObservableCollection<RouteAddressViewModel>();
+        Addresses = new ObservableCollection<AddressViewModel>();                        
+    }        
 
-        [ObservableProperty]
-        private ObservableCollection<AddressViewModel> _addresses;        
+    public async Task LoadData()
+    {
+        PageItemsList.Clear();
+        IQueryable<RouteAddressModel> a = RouteAddressViewModel.GetAll();
         
-        public RouteAddressPageViewModel()
+        foreach (RouteAddressModel item in a)
         {
-            PageItemsList = new ObservableCollection<RouteAddressViewModel>();
-            Addresses = new ObservableCollection<AddressViewModel>();                        
-        }        
-
-        public async Task LoadData()
-        {
-            PageItemsList.Clear();            
-            PageItemsList = new ObservableCollection<RouteAddressViewModel>(RouteAddressViewModel.GetAll());
-            Addresses.Clear();            
-            Addresses = new ObservableCollection<AddressViewModel>(AddressViewModel.GetAll());            
+            PageItemsList.Add(new RouteAddressViewModel(item));
+            /*
+            PageItemsList.Add(new RouteAddressViewModel(
+            new RouteViewModel(item.Route.Id, item.Route.Name, 
+            
+            , item.Route.Distance),              
+            new AddressViewModel(item.Address.Id, item.Address.Name, item.Address.UnitNum, item.Address.StreetNum, item.Address.StreetName,
+                new StreetTypeViewModel(item.Address.StreetType.Id, item.Address.StreetType.Code, item.Address.StreetType.Name, item.Address.StreetType.Common),
+                new SuburbViewModel(item.Address.Suburb.Id, item.Address.Suburb.Name, item.Address.Suburb.PostCode), item.Address.City, item.Address.GPS));
+            */
         }
+        //PageItemsList = new ObservableCollection<RouteAddressViewModel>(RouteAddressViewModel.GetAll());
+        Addresses.Clear();            
+        Addresses = new ObservableCollection<AddressViewModel>(AddressViewModel.GetAll());            
+    }
 
-        public Task Add(RouteAddressViewModel viewModel)
-        {
-            throw new System.NotImplementedException();
-        }
+    public async Task Add(RouteAddressViewModel viewModel)
+    {
+        await viewModel.Add();
+    }
 
-        public Task Update(RouteAddressViewModel viewModel)
-        {
-            throw new System.NotImplementedException();
-        }
+    public async Task Update(RouteAddressViewModel viewModel)
+    {
+        await viewModel.Update();
+    }
 
-        public Task Delete(RouteAddressViewModel viewModel)
-        {
-            throw new System.NotImplementedException();
-        }
+    public async Task Delete(RouteAddressViewModel viewModel)
+    {
+        throw new System.NotImplementedException();
     }
 }

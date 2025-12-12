@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Models;
+using Models.Navigation;
 using SampleCode.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,11 +9,7 @@ using System.Threading.Tasks;
 namespace SampleCode.ViewModels.Data.Navigation
 {
     public partial class StreetTypeViewModel : DataViewModel, IViewModel<StreetTypeViewModel>
-    {
-        [Key]
-        [ObservableProperty]
-        private int _id;
-
+    {        
         [ObservableProperty]
         [NotifyDataErrorInfo]
         [Required(ErrorMessage = "Code is Required")]
@@ -36,6 +33,14 @@ namespace SampleCode.ViewModels.Data.Navigation
             Code = code;
             Name = name;
             Common = common;
+        }
+
+        public StreetTypeViewModel(StreetTypeModel model)
+        {
+            Id = model.Id;
+            Code = model.Code;
+            Name = model.Name;
+            Common = model.Common;
         }
 
         public static IQueryable<StreetTypeViewModel> GetAll()

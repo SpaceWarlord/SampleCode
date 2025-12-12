@@ -32,8 +32,12 @@ namespace SampleCode.ViewModels.Page.Navigation
 
         public async Task LoadData()
         {
-            PageItemsList.Clear();                        
-            PageItemsList = new ObservableCollection<RouteViewModel>(RouteViewModel.GetAll());
+            PageItemsList.Clear();
+            var b = RouteViewModel.GetAll();
+            foreach (var item in b)
+            {
+                PageItemsList.Add(new RouteViewModel(item));
+            }            
         }
 
         public Task Delete(RouteViewModel viewModel)

@@ -64,14 +64,6 @@
                                     <BitmapIcon ShowAsMonochrome="False" UriSource="/Assets/Galaxy.png" />
                                 </NavigationViewItem.Icon>
                             </NavigationViewItem>
-                            <NavigationViewItem
-                                Content="Logbooks"
-                                Tag="{x:Bind x:String.Format('{0}Navigation.LogbookPage', pagePath)}"
-                                ToolTipService.ToolTip="Logbooks">
-                                <NavigationViewItem.Icon>
-                                    <BitmapIcon ShowAsMonochrome="False" UriSource="/Assets/Galaxy.png" />
-                                </NavigationViewItem.Icon>
-                            </NavigationViewItem>
                         </NavigationViewItem.MenuItems>
                     </NavigationViewItem>
                     <NavigationViewItem

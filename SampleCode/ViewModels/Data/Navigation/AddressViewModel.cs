@@ -4,6 +4,7 @@ using Models;
 using Models.Navigation;
 using SampleCode.Interfaces;
 using Syncfusion.UI.Xaml.Data;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -11,7 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace SampleCode.ViewModels.Data.Navigation;
-
 public partial class AddressViewModel : DataViewModel, IViewModel<AddressViewModel>
 {
     [ObservableProperty]
@@ -46,8 +46,7 @@ public partial class AddressViewModel : DataViewModel, IViewModel<AddressViewMod
     private string _city;
 
     [ObservableProperty]
-    private string? _gPS;
-    
+    private string? _gPS;    
     public AddressViewModel() { }
 
     public AddressViewModel(int id, string name, string? unitNum, string streetNum, string streetName, StreetTypeViewModel streetType, SuburbViewModel suburb, string city, string? gps)
@@ -61,7 +60,20 @@ public partial class AddressViewModel : DataViewModel, IViewModel<AddressViewMod
         Suburb = suburb;
         City = "New York";
         GPS = gps;
-    }        
+    }   
+    
+    public AddressViewModel(AddressModel model)
+    {
+        Id= model.Id;
+        Name = model.Name;
+        UnitNum = model.UnitNum;
+        StreetNum = model.StreetNum;
+        StreetName = model.StreetName;
+        StreetType = new StreetTypeViewModel(model.StreetType);
+        Suburb = new SuburbViewModel(model.Suburb);
+        City = model.City;
+        GPS = model.GPS;
+    }
 
     public async Task Add()
     {
@@ -79,7 +91,6 @@ public partial class AddressViewModel : DataViewModel, IViewModel<AddressViewMod
         await db.SaveChangesAsync();
         Debug.WriteLine("saved address count " + db.Addresses.Count());
     }
-
     public async Task Update()
     {
         if (Id != 0)
@@ -114,4 +125,16 @@ public partial class AddressViewModel : DataViewModel, IViewModel<AddressViewMod
             new SuburbViewModel(c.Suburb.Id, c.Suburb.Name, c.Suburb.PostCode), c.City, c.GPS));
         return query;
     }   
+
+    public static List<AddressViewModel> ToViewModels(List<AddressModel> models)
+    {
+        List<AddressViewModel> list = new List<AddressViewModel>();
+        foreach (AddressModel model in models)
+        {
+            list.Add(new AddressViewModel(model.Id,model.Name, model.UnitNum, model.StreetNum, model.StreetName, 
+                new StreetTypeViewModel(model.StreetType.Id, model.StreetType.Code, model.StreetType.Name, model.StreetType.Common), 
+                new SuburbViewModel(model.Suburb.Id, model.Suburb.Name, model.Suburb.PostCode), "", ""));
+        }
+        return list;
+    }
 }

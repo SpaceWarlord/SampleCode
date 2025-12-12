@@ -2,17 +2,13 @@
 using Models;
 using SampleCode.Interfaces;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SampleCode.ViewModels.Data
 {
     public partial class UserViewModel : DataViewModel, IViewModel<UserViewModel>
-    {
-        [ObservableProperty]
-        private int _id;
-
+    {       
         [ObservableProperty]
         [NotifyDataErrorInfo]
         [Required(ErrorMessage = "Username is Required")]

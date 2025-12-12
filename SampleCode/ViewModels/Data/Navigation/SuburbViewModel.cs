@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Models;
+using Models.Navigation;
 using SampleCode.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,11 +9,7 @@ using System.Threading.Tasks;
 namespace SampleCode.ViewModels.Data.Navigation
 {
     public partial class SuburbViewModel : DataViewModel, IViewModel<SuburbViewModel>
-    {
-        [Key]
-        [ObservableProperty]
-        private int _id;
-
+    {       
         [ObservableProperty]
         [NotifyDataErrorInfo]
         [Required(ErrorMessage = "Name is Required")]
@@ -30,6 +27,13 @@ namespace SampleCode.ViewModels.Data.Navigation
             Id = id;
             Name = name;
             PostCode = postCode;
+        }
+
+        public SuburbViewModel(SuburbModel model)
+        {
+            Id = model.Id;
+            Name = model.Name;
+            PostCode = model.PostCode;
         }
 
         public static IQueryable<SuburbViewModel> GetAll()

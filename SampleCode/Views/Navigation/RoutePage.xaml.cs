@@ -138,17 +138,49 @@ public sealed partial class RoutePage : Page, ISubDataGrid<RoutePageViewModel, R
         }
     }
 
-    public async void SubDataGrid_RowValidated(object? sender, RowValidatedEventArgs e)
-    {
-        RouteAddressViewModel? routeAddress = e.RowData as RouteAddressViewModel;
-        if (routeAddress != null)
+    /*
+     * AddressViewModel? address = MainDataGrid.SelectedItem as AddressViewModel;
+        Debug.WriteLine("Selected row data " + e.RowData.ToString());
+        if (address != null)
         {
-            Debug.WriteLine("It's validated");
-            //await SubPageViewModel.AddUpdate(routeAddress);
+            Debug.WriteLine("Selected item is " + MainDataGrid.SelectedItem.ToString());
+            await address.Update();            
+            Debug.WriteLine("UPDATING");       
         }
         else
         {
-            Debug.WriteLine("It's not validated");
+            Debug.WriteLine("Selected item was null");
+            address=new AddressViewModel();
+            address = e.RowData as AddressViewModel;
+            if (address!=null)
+            {
+                Debug.WriteLine("Adding it");
+                await address.Add();
+            }            
+        }
+     * 
+     */
+
+    public async void SubDataGrid_RowValidated(object? sender, RowValidatedEventArgs e)
+    {
+        Debug.WriteLine("--SubGrid Row validated --");       
+        //RouteAddressViewModel ? routeAddress = e.RowData as RouteAddressViewModel;
+        RouteAddressViewModel? routeAddress = RouteAddressGrid.SelectedItem as RouteAddressViewModel;
+        Debug.WriteLine("TEST");
+        if (routeAddress != null)
+        {
+            Debug.WriteLine("It's validated. Updating route address");
+            await SubPageViewModel.Update(routeAddress);
+        }
+        else
+        {
+            Debug.WriteLine("It's validated. Adding route address");
+            //routeAddress = new RouteAddressViewModel();
+            routeAddress=e.RowData as RouteAddressViewModel;
+            if(routeAddress != null)
+            {
+                await SubPageViewModel.Add(routeAddress);
+            }            
         }
     }
 }
