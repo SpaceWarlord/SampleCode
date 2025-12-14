@@ -10,14 +10,9 @@ using System.Threading.Tasks;
 
 namespace SampleCode.Services.Navigation;
 
-public class RouteAddressService : IPageService<RouteAddressModel>
+public sealed class RouteAddressService(SampleDbContext db) : IPageService<RouteAddressModel>
 {
-    private SampleDbContext _db;
-    public RouteAddressService(SampleDbContext db)
-    {
-        _db = db;
-    }
-
+    private SampleDbContext _db = db;   
     public async Task<ObservableCollection<RouteAddressModel>> GetAll()
     {                       
         List<RouteAddressModel> a = await _db.RouteAddresses.Include(i => i.Route).Include(a => a.Address).ToListAsync();

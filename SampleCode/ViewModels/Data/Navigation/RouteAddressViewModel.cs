@@ -86,9 +86,11 @@ namespace SampleCode.ViewModels.Data.Navigation
                 var route = db.Routes.SingleOrDefault(p => p.Id == Route.Id);
                 if (route!=null)
                 {
-                    var address=db.Addresses.SingleOrDefault(a => a.Id == Address.Id);
+                    //var address = db.Addresses.SingleOrDefault(a => a.Id == Address.Id).Include(b => b.StreetType);
+                    var address = db.Addresses.Include(b => b.StreetType).Include(c=>c.Suburb).SingleOrDefault(a => a.Id == Address.Id);
                     if (address!=null)
                     {
+                        //var address = db.Addresses.SingleOrDefault(a => a.Id == Address.Id);
                         var model = new RouteAddressModel()
                         {
                             Route = route,
@@ -135,18 +137,75 @@ namespace SampleCode.ViewModels.Data.Navigation
             }
         }
 
-        public static List<RouteAddressViewModel> ToViewModels(List<RouteAddressModel>? models)
+        public static List<RouteAddressViewModel> ToViewModels(List<RouteAddressModel>? models, RouteViewModel? routeVM)
+        {
+            List<RouteAddressViewModel> list = new List<RouteAddressViewModel>();
+            if (models != null)
+            {
+                if (routeVM != null)
+                {
+                    Debug.WriteLine("routeVM not null");
+                    using (var db = new SampleDbContext())
+                    {
+                        
+                        foreach (RouteAddressModel model in models)
+                        {
+                            AddressModel? addressModel = db.Addresses.Include(b => b.StreetType).Include(c => c.Suburb).SingleOrDefault(a => a.Id == model.AddressId);
+                            AddressViewModel addressVM = new();
+                            RouteAddressViewModel routeAddressVM = new();
+                            if (addressModel != null)
+                            {
+                                Debug.WriteLine("address isnt null " + addressModel.StreetName);
+                                addressVM = new AddressViewModel(addressModel);
+                                routeAddressVM = new RouteAddressViewModel(routeVM, addressVM, model.Order);
+                                list.Add(routeAddressVM);
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Address was null for routeaddressModel " + model.Id);
+                            }                                
+                        }
+                    }                        
+                }
+                else
+                {
+                    Debug.WriteLine("routeVM is null");
+                    foreach (RouteAddressModel model in models)
+                    {
+                        list.Add(new RouteAddressViewModel(new RouteViewModel(model.Route.Id, model.Route.Name, null, model.Route.Distance),
+                            new AddressViewModel(model.Address), model.Order));
+                    }
+                }
+            }
+            return list;
+        }
+        /*
+
+        public static List<RouteAddressViewModel> ToViewModels(List<RouteAddressModel>? models, RouteModel? routeModel)
         {
             List<RouteAddressViewModel> list = new List<RouteAddressViewModel>();
             if (models!=null)
             {
-                foreach (RouteAddressModel model in models)
+                if (routeModel!=null)
                 {
-                    list.Add(new RouteAddressViewModel(new RouteViewModel(model.Route.Id, model.Route.Name, RouteAddressViewModel.ToViewModels(model.Route.RouteAddresses), model.Route.Distance), 
-                        new AddressViewModel(model.Address), model.Order));
+                    RouteViewModel routeViewModel = new RouteViewModel(routeModel);
+                    foreach (RouteAddressModel model in models)
+                    {
+                        list.Add(new RouteAddressViewModel(routeViewModel,
+                            new AddressViewModel(model.Address), model.Order));
+                    }
                 }
+                else
+                {
+                    foreach (RouteAddressModel model in models)
+                    {
+                        list.Add(new RouteAddressViewModel(new RouteViewModel(model.Route.Id, model.Route.Name, null, model.Route.Distance),
+                            new AddressViewModel(model.Address), model.Order));
+                    }
+                }                    
             }            
             return list;
         }
+        */
     }
 }

@@ -1,17 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.Navigation;
+using SampleCode.Interfaces;
 using SampleCode.Main;
 using SampleCode.Other;
+using SampleCode.Services.Navigation;
 using SampleCode.ViewModels.Data;
+using SampleCode.ViewModels.Page.Navigation;
+using SampleCode.Views.Navigation;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
 using Windows.Storage;
 
@@ -34,11 +42,35 @@ public partial class App : Application
     public static ApplicationDataContainer? Settings = null;                
 
     public IServiceProvider Services { get; }
-    
+
+    private static IHost _host;
+
     public App()
     {            
-        Application.Current.DispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;            
-        Services = ConfigureServices();
+        Application.Current.DispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;        
+        
+        _host = Host.CreateDefaultBuilder()
+            .ConfigureServices((context, services) =>
+            {
+                // Register your services and ViewModels here
+                
+                services.AddDbContext<SampleDbContext>();
+                
+                services.AddScoped<AddressService>();
+                services.AddScoped<RouteAddressService>();
+                //services.AddScoped<IPageService<RouteModel>, RouteService>();
+                services.AddScoped<RouteService>();
+                services.AddScoped<StreetTypeService>();
+                services.AddScoped<SuburbService>();
+                
+                services.AddTransient<RoutePageViewModel>();
+                services.AddTransient<RoutePage>();                
+            })
+            .Build();
+        
+        //_host.Se
+        //ConfigureServices();        
+
         this.InitializeComponent();
         InitializeDb();
         AppType();            
@@ -69,6 +101,7 @@ public partial class App : Application
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
         Debug.WriteLine("ON LAUNCHED CALLED");
+        _host.Start();
         Application.Current.DispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;            
         UseSqlite();            
         if (!CheckForFirstTimeRun())
@@ -85,10 +118,26 @@ public partial class App : Application
         }
     }
 
+    // Helper method to resolve services statically
+    public static T GetService<T>() where T : class
+    {
+        return _host.Services.GetRequiredService<T>();
+    }
+
     private static ServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
         services.AddDbContext<SampleDbContext>();
+
+        // ConfigureServices(serviceCollection)        
+        services.AddScoped<IPageService<AddressModel>, AddressService>();
+        services.AddScoped<IPageService<RouteAddressModel>, RouteAddressService>();
+        services.AddScoped<IPageService<RouteModel>, RouteService>();
+        services.AddScoped<IPageService<StreetTypeModel>, StreetTypeService>();
+        services.AddScoped<IPageService<SuburbModel>, SuburbService>();
+
+        services.AddScoped<RoutePageViewModel>();
+        //serviceProvider.GetRequiredService<RoutePageViewModel>();
         return services.BuildServiceProvider();
     }
 
@@ -171,7 +220,7 @@ public partial class App : Application
             Debug.WriteLine("Packaged App");
             
         }                                   
-        using (var scope = Services.CreateScope())
+        using (var scope = _host.Services.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetService<SampleDbContext>();
             if (dbContext != null)
@@ -183,7 +232,7 @@ public partial class App : Application
 
     private void InitializeDb()
     {
-        using (var scope = Services.CreateScope())
+        using (var scope = _host.Services.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetService<SampleDbContext>();
             if (dbContext != null)

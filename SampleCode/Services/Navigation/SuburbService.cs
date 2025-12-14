@@ -8,13 +8,9 @@ using System.Threading.Tasks;
 
 namespace SampleCode.Services.Navigation;
 
-public class SuburbService : IPageService<SuburbModel>
+public sealed class SuburbService(SampleDbContext db) : IPageService<SuburbModel>
 {
-    private SampleDbContext _db;
-    public SuburbService(SampleDbContext db)
-    {
-        _db = db;
-    }
+    private SampleDbContext _db = db;   
 
     public Task<int> AddUpdate(SuburbModel model)
     {

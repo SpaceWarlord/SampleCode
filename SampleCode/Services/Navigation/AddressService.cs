@@ -10,13 +10,9 @@ using System.Threading.Tasks;
 
 namespace SampleCode.Services.Navigation;
 
-public class AddressService : IPageService<AddressModel>
+public sealed class AddressService(SampleDbContext db) : IPageService<AddressModel>
 {
-    private SampleDbContext _db;
-    public AddressService(SampleDbContext db)
-    {
-        _db = db;
-    }
+    private SampleDbContext _db = db;    
     public async Task<ObservableCollection<AddressModel>> GetAll()
     {
         //return new ObservableCollection<AddressModel>(await _db.Addresses.Select(c => new AddressModel(c.Id, c.Name, c.UnitNum, c.StreetNum, c.StreetName, c.StreetType.ToDto(), c.Suburb.ToDto(), c.City, c.GPS)).ToListAsync());                       

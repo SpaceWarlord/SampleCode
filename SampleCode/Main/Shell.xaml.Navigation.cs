@@ -61,7 +61,8 @@ public partial class Shell
         {                             
             NavigationView.SelectedItem = item;                
             return;
-        }            
+        }
+        Debug.WriteLine("----GOING TO: " + item.Tag.ToString());
         ContentFrame.Navigate(Type.GetType(item.Tag.ToString()), item.Content);
         NavigationView.Header = item.Content;
         NavigationView.SelectedItem = item;

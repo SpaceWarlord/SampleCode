@@ -16,7 +16,8 @@ public sealed partial class RoutePage : Page, ISubDataGrid<RoutePageViewModel, R
     public RoutePage()
     {
         this.InitializeComponent();
-        PageViewModel = new RoutePageViewModel();
+        //PageViewModel = new RoutePageViewModel();
+        PageViewModel = App.GetService<RoutePageViewModel>();        
         SubPageViewModel = new RouteAddressPageViewModel();
         DataContext = PageViewModel;
         MainDataGrid.AddNewRowInitiating += MainDataGrid_AddNewRowInitiating;
@@ -27,7 +28,7 @@ public sealed partial class RoutePage : Page, ISubDataGrid<RoutePageViewModel, R
         RouteAddressGrid.DataValidationMode = Syncfusion.UI.Xaml.Grids.GridValidationMode.InView;
         RouteAddressGrid.RowValidated += SubDataGrid_RowValidated;
         RouteAddressGrid.RowValidating += SubDataGridDataGrid_RowValidating;
-    }
+    }    
 
     public void MainDataGrid_AddNewRowInitiating(object? sender, AddNewRowInitiatingEventArgs e)
     {
@@ -80,7 +81,7 @@ public sealed partial class RoutePage : Page, ISubDataGrid<RoutePageViewModel, R
     public async void OnPageLoad(object sender, RoutedEventArgs e)
     {
         await PageViewModel.LoadData();
-        await PageViewModel.SubPageViewModel.LoadData();
+        //await PageViewModel.SubPageViewModel.LoadData();
         MainDataGrid.ItemsSource = PageViewModel.PageItemsList;
     }
 

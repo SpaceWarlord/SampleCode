@@ -8,13 +8,10 @@ using System.Threading.Tasks;
 
 namespace SampleCode.Services.Navigation;
 
-public class StreetTypeService : IPageService<StreetTypeModel>
+public sealed class StreetTypeService(SampleDbContext db) : IPageService<StreetTypeModel>
 {
-    private SampleDbContext _db;
-    public StreetTypeService(SampleDbContext db)
-    {
-        _db = db;
-    }
+    private SampleDbContext _db = db;
+    
     public Task<int> AddUpdate(StreetTypeModel dto)
     {
         throw new System.NotImplementedException();

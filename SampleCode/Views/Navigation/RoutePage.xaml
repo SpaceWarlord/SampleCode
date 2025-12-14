@@ -16,9 +16,6 @@
     Loaded="OnPageLoad"
     mc:Ignorable="d">
 
-    <Page.DataContext>
-        <pageViewModels:RoutePageViewModel />
-    </Page.DataContext>
     <Grid x:Name="RootGrid" Margin="40,40,20,80">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
