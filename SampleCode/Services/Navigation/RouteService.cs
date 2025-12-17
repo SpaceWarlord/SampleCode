@@ -4,11 +4,9 @@ using Models.Navigation;
 using SampleCode.Interfaces;
 using SampleCode.ViewModels.Data.Navigation;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace SampleCode.Services.Navigation;
 
@@ -121,10 +119,5 @@ public sealed class RouteService(SampleDbContext db) : IPageService<RouteModel>
             await _db.SaveChangesAsync();
             return found.Id;
         }
-    }
-
-    Task<ObservableCollection<RouteModel>> IPageService<RouteModel>.GetAll()
-    {
-        throw new System.NotImplementedException();
-    }
+    }    
 }

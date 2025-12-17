@@ -1,4 +1,3 @@
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SampleCode.ViewModels.Page;
@@ -8,11 +7,12 @@ namespace SampleCode.Views;
 
 public sealed partial class LoginPage : Page
 {
-    public LoginPageViewModel ViewModel { get; } = new();
+    public LoginPageViewModel ViewModel { get; }
 
     public LoginPage()
     {
         this.InitializeComponent();
+        ViewModel = App.GetService<LoginPageViewModel>();
         DataContext = ViewModel;            
     }
 

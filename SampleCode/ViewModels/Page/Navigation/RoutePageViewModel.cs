@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Models;
 using Models.Navigation;
 using SampleCode.Interfaces;
-using SampleCode.Maps;
+using SampleCode.Maps.Navigation;
 using SampleCode.Services.Navigation;
 using SampleCode.ViewModels.Data.Navigation;
 using System.Collections.Generic;

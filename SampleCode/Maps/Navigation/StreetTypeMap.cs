@@ -2,9 +2,9 @@
 using SampleCode.ViewModels.Data.Navigation;
 using System;
 
-namespace SampleCode.Maps;
+namespace SampleCode.Maps.Navigation;
 
-internal class StreetTypeMap : DataEntityMap<StreetTypeViewModel, StreetTypeModel>
+public class StreetTypeMap : DataEntityMap<StreetTypeViewModel, StreetTypeModel>
 {
     public override StreetTypeViewModel MapFromModel(StreetTypeModel model, bool loadRelatedEntities)
     {

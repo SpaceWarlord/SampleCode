@@ -2,24 +2,24 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Models;
 using Models.Navigation;
+using Models.Other;
 using SampleCode.Interfaces;
 using SampleCode.Main;
-using SampleCode.Other;
+using SampleCode.Services;
 using SampleCode.Services.Navigation;
 using SampleCode.ViewModels.Data;
+using SampleCode.ViewModels.Page;
 using SampleCode.ViewModels.Page.Navigation;
+using SampleCode.Views;
 using SampleCode.Views.Navigation;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
 using Windows.Storage;
 
@@ -39,9 +39,7 @@ public partial class App : Application
     public static string AppName = "SampleApp";
     public static string SettingsFileName = "app_settings.json";
     public const string SettingsContainer = "SettingsContainer";
-    public static ApplicationDataContainer? Settings = null;                
-
-    public IServiceProvider Services { get; }
+    public static ApplicationDataContainer? Settings = null;                    
 
     private static IHost _host;
 
@@ -55,14 +53,16 @@ public partial class App : Application
                 // Register your services and ViewModels here
                 
                 services.AddDbContext<SampleDbContext>();
-                
+
+                services.AddScoped<UserService>();
                 services.AddScoped<AddressService>();
-                services.AddScoped<RouteAddressService>();
-                //services.AddScoped<IPageService<RouteModel>, RouteService>();
+                services.AddScoped<RouteAddressService>();                
                 services.AddScoped<RouteService>();
                 services.AddScoped<StreetTypeService>();
                 services.AddScoped<SuburbService>();
-                
+
+                services.AddTransient<LoginPageViewModel>();
+                services.AddTransient<LoginPage>();
                 services.AddTransient<RoutePageViewModel>();
                 services.AddTransient<RoutePage>();                
             })

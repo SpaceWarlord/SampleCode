@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Models;
+using Models.Other;
 using SampleCode.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -20,7 +21,8 @@ namespace SampleCode.ViewModels.Data
         {
             Id = id;
             Username = username;
-        }                       
+        }            
+               
 
         public Task Add()
         {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Models.Navigation;
-using SampleCode.Other;
+using Models.Other;
 using System.Diagnostics;
 using System.Linq.Expressions;
 

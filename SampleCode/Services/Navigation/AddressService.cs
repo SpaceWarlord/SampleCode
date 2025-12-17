@@ -3,6 +3,7 @@ using Models;
 using Models.Navigation;
 using SampleCode.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -85,5 +86,10 @@ public sealed class AddressService(SampleDbContext db) : IPageService<AddressMod
                 return 0;
             }
         }
-    }    
+    }
+
+    Task<IEnumerable<AddressModel>> IPageService<AddressModel>.GetAll()
+    {
+        throw new NotImplementedException();
+    }
 }

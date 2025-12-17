@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Models;
+﻿using Models;
 using Models.Navigation;
 using SampleCode.Interfaces;
-using System.Collections.ObjectModel;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SampleCode.Services.Navigation;
@@ -17,9 +15,9 @@ public sealed class StreetTypeService(SampleDbContext db) : IPageService<StreetT
         throw new System.NotImplementedException();
     }
 
-    public async Task<ObservableCollection<StreetTypeModel>> GetAll()
+    public async Task<IEnumerable<StreetTypeModel>> GetAll()
     {
         //return new ObservableCollection<StreetTypeModel>(await _db.StreetTypes.Select(c => new StreetTypeModel(c.Id, c.Code, c.Name, c.Common)).ToListAsync());
         return null;
-    }
+    }    
 }

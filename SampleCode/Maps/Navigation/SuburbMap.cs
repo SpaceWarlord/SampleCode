@@ -2,7 +2,7 @@
 using SampleCode.ViewModels.Data.Navigation;
 using System;
 
-namespace SampleCode.Maps;
+namespace SampleCode.Maps.Navigation;
 
 public class SuburbMap : DataEntityMap<SuburbViewModel, SuburbModel>
 {

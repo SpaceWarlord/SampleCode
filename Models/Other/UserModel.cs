@@ -2,7 +2,7 @@
 using Models;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SampleCode.Other;
+namespace Models.Other;
 
 [Table("User", Schema = "TPT")]
 [Index(nameof(Username), IsUnique = true)]

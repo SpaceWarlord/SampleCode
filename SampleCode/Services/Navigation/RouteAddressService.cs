@@ -45,4 +45,9 @@ public sealed class RouteAddressService(SampleDbContext db) : IPageService<Route
             return found.Id;
         }
     }
+
+    Task<IEnumerable<RouteAddressModel>> IPageService<RouteAddressModel>.GetAll()
+    {
+        throw new NotImplementedException();
+    }
 }

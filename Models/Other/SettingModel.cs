@@ -1,7 +1,6 @@
-﻿using Models;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SampleCode.Other;
+namespace Models.Other;
 
 [Table("Setting", Schema = "TPT")]
 public class SettingModel:IModel

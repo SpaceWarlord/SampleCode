@@ -1,26 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
+using Models.Other;
 using SampleCode.Interfaces;
-using SampleCode.Other;
+using Syncfusion.UI.Xaml.Data;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SampleCode.Services;
 
-public class UserService : IPageService<UserModel>
+public class UserService(SampleDbContext db) : IPageService<UserModel>
 {
-    private SampleDbContext _db;
-    public UserService(SampleDbContext db)
-    {
-        _db = db;
-    }
-    public async Task<ObservableCollection<UserModel>> GetAll()
-    {
-        //return new ObservableCollection<UserModel>(await _db.Users.Select(c => new UserModel(c.Id, c.Username)).ToListAsync());
-        return null;
+    private SampleDbContext _db = db;
+    
+    public async Task<IEnumerable<UserModel>> GetAll()
+    {        
+        IQueryable<UserModel> users = db.Users;        
+        return await users.ToListAsync();
     }
 
     public async Task<bool> Update(UserModel user)
